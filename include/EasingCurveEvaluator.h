@@ -10,12 +10,11 @@ class EasingCurveEvaluator{
 	public:
 		EasingCurveEvaluator(unique_ptr<EasingCurveFactory> factory);
 		LineType getLineType(const std::string &line);
-		void setEasingCurve(const std::string &line);
-		EasingCurve& getEasingCurve();
-		int evaluateTime(float timeValue);
+		bool processEasingCurve(const std::string &line);
+		bool evaluateTime(const std::string &line, int &value);
 
 	private:
 		unique_ptr<EasingCurveFactory> factory;
-		EasingCurve currentEasingCurve; 
+		unique_ptr<EasingCurve> currentEasingCurve; 
 
 };

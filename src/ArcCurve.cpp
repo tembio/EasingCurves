@@ -2,6 +2,8 @@
 #include <unordered_map>
 #include <memory>
 
+#include <iostream>
+
 void ArcCurve::readCurve(const string& line){
    unique_ptr<unordered_map<string,float>> parameters;
    parameters = getParametersFromLine(line);

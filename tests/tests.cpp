@@ -247,6 +247,36 @@ TEST_CASE( "Easing curve factory", "[EasingCurveFactory]" ) {
 		unique_ptr<EasingCurve> curve = factory->makeEasingCurve("Linear");
 		REQUIRE(curve != nullptr);
     }
+
+    SECTION( "returns LinearCurve when curve type Linear" ) {
+		unique_ptr<EasingCurve> curve = factory->makeEasingCurve("Linear");
+		REQUIRE(curve->getType() == "Linear");
+    }
+
+    SECTION( "returns InQuadCurve when curve type InQuad" ) {
+		unique_ptr<EasingCurve> curve = factory->makeEasingCurve("InQuad");
+		REQUIRE(curve->getType() == "InQuad");
+    }
+
+    SECTION( "returns OutQuadCurve when curve type OutQuad" ) {
+		unique_ptr<EasingCurve> curve = factory->makeEasingCurve("OutQuad");
+		REQUIRE(curve->getType() == "OutQuad");
+    }
+
+    SECTION( "returns InOutQuadCurve when curve type InOutQuad" ) {
+		unique_ptr<EasingCurve> curve = factory->makeEasingCurve("InOutQuad");
+		REQUIRE(curve->getType() == "InOutQuad");
+    }
+
+    SECTION( "returns ArcYCurve when curve type ArcY" ) {
+		unique_ptr<EasingCurve> curve = factory->makeEasingCurve("ArcY");
+		REQUIRE(curve->getType() == "ArcY");
+    }
+
+    SECTION( "returns ArcXCurve when curve type ArcX" ) {
+		unique_ptr<EasingCurve> curve = factory->makeEasingCurve("ArcX");
+		REQUIRE(curve->getType() == "ArcX");
+    }
 }
 
 TEST_CASE( "Easing curve evaluator", "[EasingCurveEvaluator]" ) {

@@ -11,11 +11,12 @@ using namespace std;
 bool isFloat(const string& s);
 bool isCorrectParameter(const string& s);
 bool containsChar(string s, char value);
-string& getEasingCurveName(const std::string &easingCurveLine);
+string getEasingCurveName(const std::string &easingCurveLine);
 
 
 EasingCurveEvaluator::EasingCurveEvaluator(unique_ptr<EasingCurveFactory> factory){
 	this->factory = std::move(factory);
+	this->currentEasingCurve = nullptr;
 }
 
 LineType EasingCurveEvaluator::getLineType(const string &line){
@@ -40,23 +41,38 @@ LineType EasingCurveEvaluator::getLineType(const string &line){
 	return CURVE_DEFINITION;
 }
 
-void EasingCurveEvaluator::setEasingCurve(const std::string &line){
-	string easingCurveName = getEasingCurveName(line);
-	//this->currentEasingCurve =  
+bool EasingCurveEvaluator::processEasingCurve(const std::string &line){
+    string name = getEasingCurveName(line);
+    unique_ptr<EasingCurve> easingCurve = move(factory->makeEasingCurve(name));
+
+	if(easingCurve == nullptr)
+		return false;
+
+	try{
+		easingCurve->readCurve(line);
+	}catch(...){
+		return false;
+	}
+
+	currentEasingCurve = move(easingCurve);
+	return true;
 }
 
-EasingCurve& EasingCurveEvaluator::getEasingCurve(){
-	return currentEasingCurve;
+bool EasingCurveEvaluator::evaluateTime(const std::string &line, int &value){
+	float t = boost::lexical_cast<float>(line);
+	if(currentEasingCurve!=nullptr){
+		value =  currentEasingCurve->evaluate(t);
+		return true;
+	}
+	return false;
 }
-
-int EasingCurveEvaluator::evaluateTime(float timeValue){}
 
 
 //Private methods
 
-string& getEasingCurveName(const std::string &easingCurveLine){
+string getEasingCurveName(const std::string &easingCurve){
 	vector<string> splitVec; 
-	boost::split(splitVec, easingCurveLine, boost::is_any_of(","));
+	boost::split(splitVec, easingCurve, boost::is_any_of(","));
 	return splitVec[0];
 }
 
