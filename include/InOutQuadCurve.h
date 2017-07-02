@@ -1,12 +1,12 @@
-#ifndef LINEARCURVE__H  
-#define LINEARCURVE__H  
+#ifndef INOUTQUADCURVE__H  
+#define INOUTQUADCURVE__H  
 
 #include <string>
 #include "EasingCurve.h"
 
-class LinearCurve : public EasingCurve{
+class InOutQuadCurve : public EasingCurve{
 	public:
-	  LinearCurve();
+	  InOutQuadCurve();
 	  void readCurve(const string& line);
  	  int evaluate(float time);
 };

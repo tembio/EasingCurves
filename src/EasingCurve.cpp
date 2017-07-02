@@ -14,7 +14,7 @@ EasingCurve::EasingCurve(const string curveType){
 }
 int EasingCurve::evaluate(float time){}
 void EasingCurve::readCurve(const string& line){
-  getParametersFromLine(line);	
+  setBasicParameters(getParametersFromLine(line));	
 }
 
 string& EasingCurve::getType(){
@@ -22,15 +22,13 @@ string& EasingCurve::getType(){
 }
 
 unique_ptr<unordered_map<string,float>> EasingCurve::getParametersFromLine(const string& line){
-  vector<string> parameters; 
-  boost::split(parameters, line, boost::is_any_of(","));
-
   unique_ptr<unordered_map<string,float>> parametersMap(new unordered_map<string,float>);
+  vector<string> parameters; 
+
+  boost::split(parameters, line, boost::is_any_of(","));
+  parameters.erase(parameters.begin());
 
   for(string &parameter:parameters){
-  	if(parameter == curveType)
-  		continue;
-
     vector<string> keyValuePair; 
     boost::split(keyValuePair, parameter, boost::is_any_of("="));
     (*parametersMap)[keyValuePair[0]] = boost::lexical_cast<float>(keyValuePair[1]);
@@ -53,13 +51,3 @@ void EasingCurve::setBasicParameters(const unique_ptr<unordered_map<string,float
 	x_tmax = (*parameters)["x_tmax"];
 	duration = (*parameters)["duration"];
 }
-
-
-  
-
-/*
-		std::string curveType;
-		int x_t0;
-		int x_tmax;
-		float duration;
-*/

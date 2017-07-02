@@ -1,6 +1,7 @@
 #include <memory>
 #include <string>
 #include "EasingCurveFactory.h"
+#include "LinearCurve.h"
 
 using namespace std;
 
@@ -8,9 +9,10 @@ unique_ptr<EasingCurve> EasingCurveFactory::makeEasingCurve(const string& curveT
 	unique_ptr<EasingCurve> curve(nullptr);
 
 	if(curveType=="Linear"){
-      curve.reset(new EasingCurve("Linear"));
-	  return curve;
-	}
+      curve.reset(new LinearCurve());
+	}//else if(curveType=="InQuad"){
+	 // curve.reset(new EasingCurve("InQuad"));
+	//}
 
 	return curve;
 }

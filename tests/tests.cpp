@@ -1,9 +1,11 @@
 #define CATCH_CONFIG_MAIN
 #include "catch.hpp"
 #include <memory>
-#include <typeinfo>
 
 #include "LinearCurve.h"
+#include "InQuadCurve.h"
+#include "OutQuadCurve.h"
+#include "InOutQuadCurve.h"
 #include "EasingCurveFactory.h"
 #include "EasingCurveEvaluator.h"
 
@@ -16,6 +18,20 @@ TEST_CASE( "Easing curve", "[EasingCurve]" ) {
     	REQUIRE( curve->getType() == "Linear" );
     }
 
+    SECTION( "throws exception if x_t0 parameter is missing" ) {
+    	unique_ptr<EasingCurve> curve(new EasingCurve());
+    	CHECK_THROWS(curve->readCurve("Linear,x_tmax=200,duration=1"));
+    }
+
+    SECTION( "throws exception if x_tmax parameter is missing" ) {
+    	unique_ptr<EasingCurve> curve(new EasingCurve());
+    	CHECK_THROWS(curve->readCurve("Linear,x_t0=100,duration=1"));
+    }
+
+    SECTION( "throws exception if duration parameter is missing" ) {
+    	unique_ptr<EasingCurve> curve(new EasingCurve());
+    	CHECK_THROWS(curve->readCurve("Linear,x_t0=100,x_tmax=200"));
+    }
 }
 
 TEST_CASE( "Linear curve", "[LinearCurve]" ) {
@@ -25,23 +41,114 @@ TEST_CASE( "Linear curve", "[LinearCurve]" ) {
     	REQUIRE( curve->getType() == "Linear" );
     }
 
-    SECTION( "throws exception if x_t0 parameter is missing" ) {
-    	CHECK_THROWS(curve->readCurve("Linear,x_tmax=200,duration=1"));
+    SECTION( "returns initial position in evaluation when duration is 0" ) {
+    	curve->readCurve("Linear,x_t0=100,x_tmax=200,duration=0");
+    	REQUIRE( curve->evaluate(0.2) == 100 );
     }
 
-    SECTION( "throws exception if x_tmax parameter is missing" ) {
-    	CHECK_THROWS(curve->readCurve("Linear,x_t0=100,duration=1"));
+    SECTION( "evaluates correctly the position for a given time " ) {
+    	curve->readCurve("Linear,x_t0=100,x_tmax=200,duration=1");
+    	REQUIRE( curve->evaluate(0.2) == 120 );
     }
-
-    SECTION( "throws exception if duration parameter is missing" ) {
-    	CHECK_THROWS(curve->readCurve("Linear,x_t0=100,x_tmax=200"));
-    }
-/*
-    SECTION( "read parameter x_t0 from line" ) {
-    	REQUIRE( curve->readCruve("Linear,x_t0=100,x_tmax=200,duration=1") == "Linear" );
-    }*/
 }
-	
+
+TEST_CASE( "InQuad curve", "[InQuadCurve]" ) {
+    unique_ptr<InQuadCurve> curve(new InQuadCurve());
+
+	SECTION( "is created with InQuad type" ) {
+    	REQUIRE( curve->getType() == "InQuad" );
+    }
+
+    SECTION( "returns initial position in evaluation when duration is 0" ) {
+    	curve->readCurve("InQuad,x_t0=100,x_tmax=200,duration=0");
+    	REQUIRE( curve->evaluate(0.2) == 100 );
+    }
+
+    SECTION( "evaluates correctly the position time = 0 " ) {
+    	curve->readCurve("InQuad,x_t0=0,x_tmax=100,duration=1");
+    	REQUIRE( curve->evaluate(0) == 0 );
+    }
+
+    SECTION( "evaluates correctly the position time max " ) {
+    	curve->readCurve("InQuad,x_t0=0,x_tmax=100,duration=1");
+    	REQUIRE( curve->evaluate(1) == 100 );
+    }
+
+    SECTION( "evaluates correctly the position for a given time " ) {
+    	curve->readCurve("InQuad,x_t0=0,x_tmax=100,duration=1");
+    	REQUIRE( curve->evaluate(0.5) == 25 );
+    }
+}
+
+
+TEST_CASE( "OutQuad curve", "[OutQuadCurve]" ) {
+    unique_ptr<OutQuadCurve> curve(new OutQuadCurve());
+
+	SECTION( "is created with OutQuad type" ) {
+    	REQUIRE( curve->getType() == "OutQuad" );
+    }
+
+    SECTION( "returns initial position in evaluation when duration is 0" ) {
+    	curve->readCurve("OutQuad,x_t0=100,x_tmax=200,duration=0");
+    	REQUIRE( curve->evaluate(0.2) == 100 );
+    }
+
+
+    SECTION( "evaluates correctly the position time = 0 " ) {
+    	curve->readCurve("OutQuad,x_t0=0,x_tmax=100,duration=1");
+    	REQUIRE( curve->evaluate(0) == 0 );
+    }
+
+    SECTION( "evaluates correctly the position time max " ) {
+    	curve->readCurve("OutQuad,x_t0=0,x_tmax=100,duration=1");
+    	REQUIRE( curve->evaluate(1) == 100 );
+    }
+
+    SECTION( "evaluates correctly the position for a given time " ) {
+    	curve->readCurve("OutQuad,x_t0=0,x_tmax=100,duration=1");
+    	REQUIRE( curve->evaluate(0.5) == 75 );
+    }
+}
+
+
+TEST_CASE( "InOutQuad curve", "[InOutQuadCurve]" ) {
+    unique_ptr<InOutQuadCurve> curve(new InOutQuadCurve());
+
+	SECTION( "is created with InOutQuad type" ) {
+    	REQUIRE( curve->getType() == "InOutQuad" );
+    }
+
+    SECTION( "returns initial position in evaluation when duration is 0" ) {
+    	curve->readCurve("InOutQuad,x_t0=100,x_tmax=200,duration=0");
+    	REQUIRE( curve->evaluate(0.2) == 100 );
+    }
+
+    SECTION( "evaluates correctly the position time = 0 " ) {
+    	curve->readCurve("InOutQuad,x_t0=0,x_tmax=100,duration=1");
+    	REQUIRE( curve->evaluate(0) == 0 );
+    }
+
+    SECTION( "evaluates correctly the position time max " ) {
+    	curve->readCurve("InOutQuad,x_t0=0,x_tmax=100,duration=1");
+    	REQUIRE( curve->evaluate(1) == 100 );
+    }
+
+    SECTION( "evaluates correctly the position for a given time in first half " ) {
+    	curve->readCurve("InOutQuad,x_t0=0,x_tmax=100,duration=1");
+    	REQUIRE( curve->evaluate(0.25) == 12 );
+    }
+
+	SECTION( "evaluates correctly the position for a given time in the middle point " ) {
+    	curve->readCurve("InOutQuad,x_t0=0,x_tmax=100,duration=1");
+    	REQUIRE( curve->evaluate(0.5) == 50 );
+    }
+
+    SECTION( "evaluates correctly the position for a given time in second half " ) {
+    	curve->readCurve("Linear,x_t0=0,x_tmax=100,duration=1");
+    	REQUIRE( curve->evaluate(0.75) == 87 );
+    }
+}
+
 TEST_CASE( "Easing curve factory", "[EasingCurveFactory]" ) {
     unique_ptr<EasingCurveFactory> factory(new EasingCurveFactory());
 

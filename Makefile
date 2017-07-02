@@ -4,7 +4,13 @@ BUILDDIR := build
 TARGET := bin/EasingCurves
  
 SRCEXT := cpp
-OBJECTS :=  $(BUILDDIR)/EasingCurve.o $(BUILDDIR)/LinearCurve.o $(BUILDDIR)/EasingCurveFactory.o $(BUILDDIR)/EasingCurveEvaluator.o
+OBJECTS :=  $(BUILDDIR)/EasingCurve.o \
+		    $(BUILDDIR)/LinearCurve.o \
+		    $(BUILDDIR)/InQuadCurve.o \
+		    $(BUILDDIR)/OutQuadCurve.o \
+		    $(BUILDDIR)/InOutQuadCurve.o \
+		    $(BUILDDIR)/EasingCurveFactory.o \
+		    $(BUILDDIR)/EasingCurveEvaluator.o
 CFLAGS := -g -std=c++14# -Wall
 INC := -I include
 TESTSDIR := tests

@@ -8,6 +8,11 @@ LinearCurve::LinearCurve(){
 
 void LinearCurve::readCurve(const string& line){
    unique_ptr<unordered_map<string,float>> parameters;
-   parameters = getParametersFromLine(line);
-   setBasicParameters(parameters);
+   setBasicParameters(getParametersFromLine(line));
 }
+
+ int LinearCurve::evaluate(float t){
+ 	if(duration==0)
+ 		return x_t0;
+ 	return x_t0 + t*(x_tmax-x_t0)/duration;
+ }
