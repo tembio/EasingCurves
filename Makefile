@@ -4,15 +4,16 @@ BUILDDIR := build
 TARGET := bin/EasingCurves
  
 SRCEXT := cpp
-OBJECTS := $(BUILDDIR)/main.o $(BUILDDIR)/EasingCurve.o $(BUILDDIR)/EasingCurveEvaluator.o
-CFLAGS := -g # -Wall
+OBJECTS :=  $(BUILDDIR)/EasingCurve.o $(BUILDDIR)/LinearCurve.o $(BUILDDIR)/EasingCurveFactory.o $(BUILDDIR)/EasingCurveEvaluator.o
+CFLAGS := -g -std=c++14# -Wall
 INC := -I include
+TESTSDIR := tests
 
-$(TARGET): $(OBJECTS)
+$(TARGET): $(OBJECTS) $(BUILDDIR)/main.o
 	@echo " Linking...";
 	@echo " $(CC) $^ -o $(TARGET)"; $(CC) $^ -o $(TARGET)
 
-$(BUILDDIR)/%.o: $(SRCDIR)/%.$(SRCEXT)
+$(BUILDDIR)/%.o: $(SRCDIR)/%.$(SRCEXT) 
 	@mkdir -p $(BUILDDIR)
 	@echo " $(CC) $(CFLAGS) $(INC) -c -o $@ $<"; $(CC) $(CFLAGS) $(INC) -c -o $@ $<
 
@@ -21,7 +22,9 @@ clean:
 	@echo " $(RM) -r $(BUILDDIR) $(TARGET)"; $(RM) -r $(BUILDDIR) $(TARGET)
 
 # Tests
-tester:
-	$(CC) $(CFLAGS) test/tester.cpp $(INC) $(LIB) -o bin/tester
+tests: tests.o $(OBJECTS)
+	$(CC) $(CFLAGS) $(OBJECTS) $(BUILDDIR)/tests.o -o bin/tests
 
-.PHONY: clean
+tests.o: 
+	$(CC) $(CFLAGS) $(TESTSDIR)/tests.cpp $(INC) -c -o $(BUILDDIR)/tests.o
+
