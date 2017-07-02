@@ -39,15 +39,15 @@ unique_ptr<unordered_map<string,float>> EasingCurve::getParametersFromLine(const
 
 void EasingCurve::setBasicParameters(const unique_ptr<unordered_map<string,float>>& parameters){
 	if(parameters->find("x_t0") == parameters->end())
-   	  throw "Parameter x_t0 missing!";
+    throw "Parameter x_t0 missing!";
    
-    if(parameters->find("x_tmax") == parameters->end())
-   	  throw "Parameter x_tmax missing!";
+  if(parameters->find("x_tmax") == parameters->end())
+    throw "Parameter x_tmax missing!";
    
-    if(parameters->find("duration") == parameters->end())
-   	  throw "Parameter duration missing!";
+  if(parameters->find("duration") == parameters->end())
+    throw "Parameter duration missing!";
 
-   	x_t0 = (*parameters)["x_t0"];
+  x_t0 = (*parameters)["x_t0"];
 	x_tmax = (*parameters)["x_tmax"];
 	duration = (*parameters)["duration"];
 }

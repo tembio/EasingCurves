@@ -6,6 +6,8 @@
 #include "InQuadCurve.h"
 #include "OutQuadCurve.h"
 #include "InOutQuadCurve.h"
+#include "ArcYCurve.h"
+#include "ArcXCurve.h"
 #include "EasingCurveFactory.h"
 #include "EasingCurveEvaluator.h"
 
@@ -93,7 +95,6 @@ TEST_CASE( "OutQuad curve", "[OutQuadCurve]" ) {
     	REQUIRE( curve->evaluate(0.2) == 100 );
     }
 
-
     SECTION( "evaluates correctly the position time = 0 " ) {
     	curve->readCurve("OutQuad,x_t0=0,x_tmax=100,duration=1");
     	REQUIRE( curve->evaluate(0) == 0 );
@@ -109,7 +110,6 @@ TEST_CASE( "OutQuad curve", "[OutQuadCurve]" ) {
     	REQUIRE( curve->evaluate(0.5) == 75 );
     }
 }
-
 
 TEST_CASE( "InOutQuad curve", "[InOutQuadCurve]" ) {
     unique_ptr<InOutQuadCurve> curve(new InOutQuadCurve());
@@ -144,8 +144,94 @@ TEST_CASE( "InOutQuad curve", "[InOutQuadCurve]" ) {
     }
 
     SECTION( "evaluates correctly the position for a given time in second half " ) {
-    	curve->readCurve("Linear,x_t0=0,x_tmax=100,duration=1");
+    	curve->readCurve("InOutQuad,x_t0=0,x_tmax=100,duration=1");
     	REQUIRE( curve->evaluate(0.75) == 87 );
+    }
+}
+
+TEST_CASE( "ArcY curve", "[ArcYCurve]" ) {
+    unique_ptr<ArcYCurve> curve(new ArcYCurve());
+
+	SECTION( "is created with ArcY type" ) {
+    	REQUIRE( curve->getType() == "ArcY" );
+    }
+
+    SECTION( "throws exception if radius parameter is missing" ) {
+    	unique_ptr<ArcYCurve> curveCheckParam(new ArcYCurve());
+    	CHECK_THROWS(curveCheckParam->readCurve("ArcY,x_t0=0,x_tmax=100,theta_t0=0,theta_tmax=3.14,duration=1"));
+    }
+
+    SECTION( "throws exception if theta_t0 parameter is missing" ) {
+    	unique_ptr<ArcYCurve> curveCheckParam(new ArcYCurve());
+    	CHECK_THROWS(curveCheckParam->readCurve("ArcY,x_t0=0,x_tmax=100,radius=1,theta_tmax=3.14,duration=1"));
+    }
+
+    SECTION( "throws exception if theta_tmax parameter is missing" ) {
+    	unique_ptr<ArcYCurve> curveCheckParam(new ArcYCurve());
+    	CHECK_THROWS(curveCheckParam->readCurve("ArcY,x_t0=0,x_tmax=100,radius=1,theta_t0=0,duration=1"));
+    }
+
+    SECTION( "returns initial position in evaluation when duration is 0" ) {
+    	curve->readCurve("ArcY,x_t0=0,x_tmax=100,radius=100,theta_t0=0,theta_tmax=1.57,duration=1");
+    	REQUIRE( curve->evaluate(0) == 0 );
+    }
+
+    SECTION( "evaluates correctly the position at time max" ) {
+    	curve->readCurve("ArcY,x_t0=0,x_tmax=100,radius=100,theta_t0=0,theta_tmax=1.5707963267,duration=1");
+    	REQUIRE( curve->evaluate(1) == 100 );
+    }
+
+    SECTION( "evaluates correctly the position at the middle" ) {
+    	curve->readCurve("ArcY,x_t0=0,x_tmax=100,radius=100,theta_t0=0,theta_tmax=1.5707963267,duration=1");
+    	REQUIRE( curve->evaluate(0.5) == 50 );
+    }
+
+    SECTION( "evaluates correctly the position for a given time" ) {
+    	curve->readCurve("ArcY,x_t0=0,x_tmax=100,radius=100,theta_t0=0,theta_tmax=1.5707963267,duration=1");
+    	REQUIRE( curve->evaluate(0.75) == 75 );
+    }
+}
+
+TEST_CASE( "ArcX curve", "[ArcXCurve]" ) {
+    unique_ptr<ArcXCurve> curve(new ArcXCurve());
+
+	SECTION( "is created with ArcX type" ) {
+    	REQUIRE( curve->getType() == "ArcX" );
+    }
+
+    SECTION( "throws exception if radius parameter is missing" ) {
+    	unique_ptr<ArcXCurve> curveCheckParam(new ArcXCurve());
+    	CHECK_THROWS(curveCheckParam->readCurve("ArcX,x_t0=0,x_tmax=100,theta_t0=0,theta_tmax=3.14,duration=1"));
+    }
+
+    SECTION( "throws exception if theta_t0 parameter is missing" ) {
+    	unique_ptr<ArcXCurve> curveCheckParam(new ArcXCurve());
+    	CHECK_THROWS(curveCheckParam->readCurve("ArcX,x_t0=0,x_tmax=100,radius=1,theta_tmax=3.14,duration=1"));
+    }
+
+    SECTION( "throws exception if theta_tmax parameter is missing" ) {
+    	unique_ptr<ArcXCurve> curveCheckParam(new ArcXCurve());
+    	CHECK_THROWS(curveCheckParam->readCurve("ArcX,x_t0=0,x_tmax=100,radius=1,theta_t0=0,duration=1"));
+    }
+
+    SECTION( "returns initial position in evaluation when duration is 0" ) {
+    	curve->readCurve("ArcX,x_t0=0,x_tmax=100,radius=100,theta_t0=0,theta_tmax=1.57,duration=1");
+    	REQUIRE( curve->evaluate(0) == 0 );
+    }
+
+    SECTION( "evaluates correctly the position at time max" ) {
+    	curve->readCurve("ArcX,x_t0=0,x_tmax=100,radius=100,theta_t0=0,theta_tmax=1.5707963267,duration=1");
+    	REQUIRE( curve->evaluate(1) == -100 );
+    }
+
+    SECTION( "evaluates correctly the position at the middle" ) {
+    	curve->readCurve("ArcX,x_t0=0,x_tmax=100,radius=100,theta_t0=0,theta_tmax=1.5707963267,duration=1");
+    	REQUIRE( curve->evaluate(0.5) == -50 );
+    }
+
+    SECTION( "evaluates correctly the position for a given time" ) {
+    	curve->readCurve("ArcX,x_t0=0,x_tmax=100,radius=100,theta_t0=0,theta_tmax=1.5707963267,duration=1");
+    	REQUIRE( curve->evaluate(0.75) == -75 );
     }
 }
 
@@ -166,8 +252,6 @@ TEST_CASE( "Easing curve factory", "[EasingCurveFactory]" ) {
 TEST_CASE( "Easing curve evaluator", "[EasingCurveEvaluator]" ) {
 
 	unique_ptr<EasingCurveFactory> factory(new EasingCurveFactory());
-
-	//GetLineType
 
 	SECTION( "getLineType returns TIME_VALUE when the line has just one number" ) {
     	unique_ptr<EasingCurveEvaluator> evaluator(new EasingCurveEvaluator(std::move(factory)));
@@ -216,13 +300,4 @@ TEST_CASE( "Easing curve evaluator", "[EasingCurveEvaluator]" ) {
     	unique_ptr<EasingCurveEvaluator> evaluator(new EasingCurveEvaluator(std::move(factory)));
     	REQUIRE( evaluator->getLineType("Linear,x_t0=100,x_tmax=200,duration=1") == CURVE_DEFINITION);
     }
-
-    //SetEasingCurve
-
-//	evaluator->setEasingCurve("Linear,x_t0=100,x_tmax=200,duration=1");
-/*
-    SECTION( "setEasingCurve sets easingCurve name to the curve read on the line" ) {
-    	REQUIRE( evaluator->getEasingCurve().getType() == "Linear");
-    }
-*/
 }

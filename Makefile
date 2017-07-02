@@ -9,6 +9,9 @@ OBJECTS :=  $(BUILDDIR)/EasingCurve.o \
 		    $(BUILDDIR)/InQuadCurve.o \
 		    $(BUILDDIR)/OutQuadCurve.o \
 		    $(BUILDDIR)/InOutQuadCurve.o \
+		    $(BUILDDIR)/ArcCurve.o \
+		    $(BUILDDIR)/ArcYCurve.o \
+		    $(BUILDDIR)/ArcXCurve.o \
 		    $(BUILDDIR)/EasingCurveFactory.o \
 		    $(BUILDDIR)/EasingCurveEvaluator.o
 CFLAGS := -g -std=c++14# -Wall

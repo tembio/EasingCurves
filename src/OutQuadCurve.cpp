@@ -7,7 +7,6 @@ OutQuadCurve::OutQuadCurve(){
 }
 
 void OutQuadCurve::readCurve(const string& line){
-   unique_ptr<unordered_map<string,float>> parameters;
    setBasicParameters(getParametersFromLine(line));
 }
 
