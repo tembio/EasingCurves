@@ -8,8 +8,6 @@
 #include "ArcYCurve.h"
 #include "ArcXCurve.h"
 
-#include <iostream>
-
 using namespace std;
 
 unique_ptr<EasingCurve> EasingCurveFactory::makeEasingCurve(const string& curveType){
